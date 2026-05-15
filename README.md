@@ -1,20 +1,28 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Nexus AI Finance - Mobile Homepage
 
-# Run and deploy your AI Studio app
+This project is a high-end, mobile-responsive homepage for **Nexus AI Finance**, a next-generation AI fintech company. The design is inspired by the institutional reliability and sophisticated aesthetic of **JP Morgan**.
 
-This contains everything you need to run your app locally.
+## Folders
+- `/Test1`: Contains the full application source code.
 
-View your app in AI Studio: https://ai.studio/apps/29777a34-df77-4ac9-8985-ea4a0415e9c7
+## Key Features
+- **Institutional Design**: Utilizes a deep navy (`#001D47`) and gold (`#D4C4A8`) color palette to convey trust and prestige.
+- **AI-Powered Sections**:
+  - **Hero**: A cinematic entrance highlighting "Intelligent Capital."
+  - **Intelligence**: Real-time market data visualization and statistics.
+  - **Solutions**: Detailed breakdown of Global Asset Management, Risk Control, and Wealth Strategies.
+  - **Sustainability**: Showcasing commitment to ESG (Environmental, Social, and Governance) through AI.
+- **High Performance**: Built with React 19, Vite, and Tailwind CSS for lightning-fast loading.
+- **Micro-interactions**: Subtle animations using `motion` to guide the user's eye and improve engagement.
 
-## Run Locally
+## Technical Stack
+- **Framework**: React 18+ (Vite)
+- **Styling**: Tailwind CSS 4.0
+- **Animations**: Motion
+- **Icons**: Lucide React
+- **Typography**: Inter (Sans-serif) and Playfair Display (Serif)
 
-**Prerequisites:**  Node.js
-
-
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+## Setting Up
+1. Install dependencies: `npm install`
+2. Run development server: `npm run dev`
+3. Build for production: `npm run build`
