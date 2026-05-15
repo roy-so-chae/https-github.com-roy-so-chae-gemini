@@ -1,28 +1,14 @@
-# Nexus AI Finance - Mobile Homepage
+# Nexus AI Finance - Gemini Generated Repository
 
-This project is a high-end, mobile-responsive homepage for **Nexus AI Finance**, a next-generation AI fintech company. The design is inspired by the institutional reliability and sophisticated aesthetic of **JP Morgan**.
+이 저장소는 **Google AI Studio (Gemini)**를 통해 생성된 프로젝트들을 관리하는 공간입니다.
 
-## Folders
-- `/Test1`: Contains the full application source code.
+## 저장소 구조
+- **[/Test1](./Test1)**: JP Morgan 스타일의 AI 핀테크 모바일 홈페이지 소스 코드가 포함되어 있습니다. (React, Tailwind CSS, Motion)
 
-## Key Features
-- **Institutional Design**: Utilizes a deep navy (`#001D47`) and gold (`#D4C4A8`) color palette to convey trust and prestige.
-- **AI-Powered Sections**:
-  - **Hero**: A cinematic entrance highlighting "Intelligent Capital."
-  - **Intelligence**: Real-time market data visualization and statistics.
-  - **Solutions**: Detailed breakdown of Global Asset Management, Risk Control, and Wealth Strategies.
-  - **Sustainability**: Showcasing commitment to ESG (Environmental, Social, and Governance) through AI.
-- **High Performance**: Built with React 19, Vite, and Tailwind CSS for lightning-fast loading.
-- **Micro-interactions**: Subtle animations using `motion` to guide the user's eye and improve engagement.
+## 프로젝트 설명
+- **도구**: Google AI Studio Build
+- **모델**: Gemini 2.0 Flash
+- **목적**: 전문적인 금융 서비스 디자인과 AI 기술의 결합을 보여주는 프로토타입
 
-## Technical Stack
-- **Framework**: React 18+ (Vite)
-- **Styling**: Tailwind CSS 4.0
-- **Animations**: Motion
-- **Icons**: Lucide React
-- **Typography**: Inter (Sans-serif) and Playfair Display (Serif)
-
-## Setting Up
-1. Install dependencies: `npm install`
-2. Run development server: `npm run dev`
-3. Build for production: `npm run build`
+---
+*Created with Gemini.*
