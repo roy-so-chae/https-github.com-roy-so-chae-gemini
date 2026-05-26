@@ -6,6 +6,24 @@
 
 ---
 
+## 📲 단일 포터블 파일 가동: `Nexus AI.html` 즉시 더블클릭 실행
+
+로컬 노드 패키지(`npm install`) 설치 절차나 복잡한 컴파일 세팅 없이, 아래 **실행용 단일 HTML 파일**을 즉시 더블클릭 하거나 클릭만으로 웹 브라우저에서 대화형 시뮬레이션을 1초 만에 확인해 보실 수 있습니다! React, Tailwind, Lucide Icons CDN을 완전 내장하여 가동됩니다.
+
+*   👉 **[루트 진입점: Nexus AI.html 즉시 실행/다운로드 링크](./Nexus%20AI.html)**
+*   👉 **[Test1 폴더 하위: Nexus AI.html 즉시 실행/다운로드 링크](./Test1/Nexus%20AI.html)**
+
+---
+
+## ⚡ 실시간 서버 데모: 바로 클릭해서 웹에서 즉시 테스트하기 (Live Sandbox Platforms)
+
+웹 브라우저를 통해 실시간으로 스트리밍 가동 중인 샌드박스 링크입니다. 언제 어디서든 바로 구동해 보실 수 있습니다.
+
+*   👉 **[개발 전용 샌드박스 URL 실행하기 (Development Live App)](https://ais-dev-kzarxok5ga4zqrvu7cwycp-219759272678.asia-northeast1.run.app)** (가장 즉각적이고 안정적인 테스트베드)
+*   👉 **[공유용 프리뷰 호스트 URL 실행하기 (Shared Live App)](https://ais-pre-kzarxok5ga4zqrvu7cwycp-219759272678.asia-northeast1.run.app)** (협업 및 데모용 안정화 빌드)
+
+---
+
 ## 🌐 웹에서 바로 실행하고 확인하는 방법 (Web Instant Execution)
 
 이 저장소를 컴퓨터에 다운로드할 필요 없이 **웹 브라우저에서 버튼 클릭 한 번으로 바로 실행**하고 화면을 확인하실 수 있습니다.
@@ -43,6 +61,46 @@ GitHub에서 자체 제공하는 무료 클라우드 환경인 Codespaces를 통
 1. [Vercel](https://vercel.com/) 로그인 후 **`Add New Project`** -> 현재 GitHub 저장소 임포트(Import)
 2. 프로젝트 구성 설정 창에서 **Framework Preset**을 `Vite`로 두고, **Root Directory**를 `Test1` 폴더로 지정합니다.
 3. **`Deploy`** 버튼을 누르면 인스턴트 모바일 웹 호스팅 완성과 함께 배포 완료된 라이브 고유 URL 주소가 발급됩니다.
+
+---
+
+## 📄 HTML 파일 구성 명세 (HTML Sources)
+
+이 프로젝트에 구성되어 있는 핵심 진입점 HTML 마크업 코드 원본입니다.
+
+### 1. 루트 인덱스 마크업 (`/index.html`)
+
+```html
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nexus AI Finance</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/Test1/src/main.tsx"></script>
+  </body>
+</html>
+```
+
+### 2. 모듈 테스트 인덱스 마크업 (`/Test1/index.html`)
+
+```html
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nexus AI Finance</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+```
 
 ---
 

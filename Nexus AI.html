@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus AI Finance - Sovereign Mobile Portal</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Inter:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN v3 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        serif: ['"Cormorant Garamond"', 'serif'],
+                        sans: ['"Inter"', 'sans-serif'],
+                    },
+                    colors: {
+                        jpm: {
+                            navy: '#0F1E36',
+                            gold: '#9E8256',
+                            'gold-light': '#C5A880',
+                            paper: '#FBF9F6',
+                            gray: '#4A525D',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- React & React DOM CDN -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <!-- Babel standalone for compiling JSX in-browser -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js" crossorigin></script>
+    <!-- Custom Scrollbar Style & Animation styles -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0A0E14;
+        }
+        .text-serif {
+            font-family: 'Cormorant Garamond', serif;
+        }
+        .scrollbar-thin::-webkit-scrollbar {
+            width: 4px;
+        }
+        .scrollbar-thin::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .scrollbar-thin::-webkit-scrollbar-thumb {
+            background: #9E8256;
+            border-radius: 4px;
+        }
+        /* Fade transition emulation */
+        .fade-enter {
+            opacity: 0;
+            transform: scale(0.99) translateY(10px);
+            transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+        }
+        .fade-enter-active {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+    </style>
+</head>
+<body class="selection:bg-[#9E8256] selection:text-white text-[#0F1E36] antialiased">
+
+    <!-- Root Container for React Mounting -->
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // --- Custom Inline Icon Engine mapping Lucide to standalone SVG vectors ---
+        function Icon({ name, size = 16, className = "" }) {
+            const svgAttrs = {
+                xmlns: "http://www.w3.org/2000/svg",
+                width: size,
+                height: size,
+                viewBox: "0 0 24 24",
+                fill: "none",
+                stroke: "currentColor",
+                strokeWidth: "2",
+                strokeLinecap: "round",
+                strokeLinejoin: "round",
+                className: `inline-block align-middle ${className}`
+            };
+
+            switch (name) {
+                case 'smartphone':
+                    return (
+                        <svg {...svgAttrs}>
+                            <rect width="14" height="20" x="5" y="2" rx="2" ry="2"/>
+                            <line x1="12" x2="12.01" y1="18" y2="18"/>
+                        </svg>
+                    );
+                case 'chevron-right':
+                    return (
+                        <svg {...svgAttrs}>
+                            <path d="m9 18 6-6-6-6"/>
+                        </svg>
+                    );
+                case 'signal':
+                    return (
+                        <svg {...svgAttrs}>
+                            <path d="M2 20h.01"/>
+                            <path d="M7 20v-4"/>
+                            <path d="M12 20v-8"/>
+                            <path d="M17 20V8"/>
+                            <path d="M22 20V4"/>
+                        </svg>
+                    );
+                case 'wifi':
+                    return (
+                        <svg {...svgAttrs}>
+                            <path d="M12 20h.01"/>
+                            <path d="M8.5 16.5a5 5 0 0 1 7 0"/>
+                            <path d="M5 13a10 10 0 0 1 14 0"/>
+                            <path d="M1.5 9.5a15 15 0 0 1 21 0"/>
+                        </svg>
+                    );
+                case 'sliders-horizontal':
+                    return (
+                        <svg {...svgAttrs}>
+                            <line x1="21" x2="14" y1="4" y2="4"/>
+                            <line x1="10" x2="3" y1="4" y2="4"/>
+                            <line x1="21" x2="12" y1="12" y2="12"/>
+                            <line x1="8" x2="3" y1="12" y2="12"/>
+                            <line x1="21" x2="16" y1="20" y2="20"/>
+                            <line x1="12" x2="3" y1="20" y2="20"/>
+                            <line x1="14" x2="14" y1="2" y2="6"/>
+                            <line x1="8" x2="8" y1="10" y2="14"/>
+                            <line x1="16" x2="16" y1="18" y2="22"/>
+                        </svg>
+                    );
+                case 'refresh-cw':
+                    return (
+                        <svg {...svgAttrs}>
+                            <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                            <path d="M3 3v5h5"/>
+                            <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/>
+                            <path d="M16 16h5v5"/>
+                        </svg>
+                    );
+                case 'cpu':
+                    return (
+                        <svg {...svgAttrs}>
+                            <rect width="16" height="16" x="4" y="4" rx="2"/>
+                            <rect width="6" height="6" x="9" y="9" rx="1"/>
+                            <path d="M9 1v3"/>
+                            <path d="M15 1v3"/>
+                            <path d="M9 20v3"/>
+                            <path d="M15 20v3"/>
+                            <path d="M20 9h3"/>
+                            <path d="M20 15h3"/>
+                            <path d="M1 9h3"/>
+                            <path d="M1 15h3"/>
+                        </svg>
+                    );
+                case 'book-open':
+                    return (
+                        <svg {...svgAttrs}>
+                            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+                            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+                        </svg>
+                    );
+                case 'compass':
+                    return (
+                        <svg {...svgAttrs}>
+                            <circle cx="12" cy="12" r="10"/>
+                            <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
+                        </svg>
+                    );
+                case 'shield-check':
+                    return (
+                        <svg {...svgAttrs}>
+                            <path d="M20 13c0 5-3.5 7.5-7.66 9.7a1 1 0 0 1-.68 0C7.5 20.5 4 18 4 13V6a1 1 0 0 1 .76-.97l8.24-2.26a1 1 0 0 1 .68 0l8.24 2.26A1 1 0 0 1 20 6Z"/>
+                            <path d="m9 12 2 2 4-4"/>
+                        </svg>
+                    );
+                case 'building':
+                    return (
+                        <svg {...svgAttrs}>
+                            <rect width="16" height="20" x="4" y="2" rx="2" ry="2"/>
+                            <path d="M9 22v-4h6v4"/>
+                            <path d="M8 6h.01"/>
+                            <path d="M16 6h.01"/>
+                            <path d="M8 10h.01"/>
+                            <path d="M16 10h.01"/>
+                            <path d="M8 14h.01"/>
+                            <path d="M16 14h.01"/>
+                        </svg>
+                    );
+                case 'activity':
+                    return (
+                        <svg {...svgAttrs}>
+                            <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                        </svg>
+                    );
+                case 'phone-call':
+                    return (
+                        <svg {...svgAttrs}>
+                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                            <path d="M14.05 2a9 9 0 0 1 8 8"/>
+                            <path d="M14.05 6A5 5 0 0 1 18 10"/>
+                        </svg>
+                    );
+                case 'sparkles':
+                    return (
+                        <svg {...svgAttrs}>
+                            <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275Z"/>
+                            <path d="m5 3 1 2.5L8.5 6 6 7 5 9.5 4 7 1.5 6 4 5Z"/>
+                        </svg>
+                    );
+                case 'check':
+                    return (
+                        <svg {...svgAttrs}>
+                            <path d="M20 6 9 17l-5-5"/>
+                        </svg>
+                    );
+                case 'trending-up':
+                    return (
+                        <svg {...svgAttrs}>
+                            <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
+                            <polyline points="16 7 22 7 22 13"/>
+                        </svg>
+                    );
+                case 'globe':
+                    return (
+                        <svg {...svgAttrs}>
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/>
+                            <path d="M2 12h20"/>
+                        </svg>
+                    );
+                default:
+                    // Fallback to simple dot info
+                    return (
+                        <svg {...svgAttrs}>
+                            <circle cx="12" cy="12" r="3" fill="currentColor" />
+                        </svg>
+                    );
+            }
+        }
+
+        // --- Simulated Data Storage ---
+        const REAL_TIME_MARKETS = [
+            { name: "NEXUS US EQ AI", value: "4,912.40", change: "+1.42%", trend: "up" },
+            { name: "BENCHMARK CORE", value: "3,219.15", change: "-0.24%", trend: "down" },
+            { name: "AI ALPHA ALTS", value: "12,410.82", change: "+2.85%", trend: "up" },
+            { name: "GLOBAL MULTI-SEC", value: "1.0831", change: "+0.12%", trend: "up" }
+        ];
+
+        const STRATEGIC_OUTLOOKS = [
+            {
+                category: "MACRO INSIGHT",
+                title: "Sovereign AI Infrastructure in Family Offices",
+                author: "Elena Rostova, Chief Global Strategist",
+                readTime: "6 Min Read",
+                excerpt: "Institutional capital is expanding from high-latency model access to direct physical ownership of sovereign compute nodes, restructuring global corporate balance sheets."
+            },
+            {
+                category: "PORTFOLIO PERSPECTIVE",
+                title: "Predictive Analytics & Private Fixed Income Alpha",
+                author: "Dr. Arthur Vance, Head of Fixed Income",
+                readTime: "8 Min Read",
+                excerpt: "Traditional baseline credit evaluations decay in erratic cycles. Our deep physical stress neural models expose alpha in secondary asset-backed corporate blocks."
+            }
+        ];
+
+        function App() {
+            const [activePage, setActivePage] = useState('perspective');
+            
+            // Layout anim trigger state
+            const [animState, setAnimState] = useState('fade-enter-active');
+
+            // Interactive simulation parameters
+            const [investmentSize, setInvestmentSize] = useState(5000000);
+            const [riskProfile, setRiskProfile] = useState('balanced');
+            
+            // Risk scenario values
+            const [selectedRiskScenario, setSelectedRiskScenario] = useState('Geopolitical Stress');
+            const [isSimulatingRisk, setIsSimulatingRisk] = useState(false);
+            const [simulatedScore, setSimulatedScore] = useState(91);
+
+            // ESG metric toggle
+            const [activeEsgMetric, setActiveEsgMetric] = useState('carbon');
+
+            // Form Submit state
+            const [contactName, setContactName] = useState('');
+            const [contactEmail, setContactEmail] = useState('');
+            const [contactService, setContactService] = useState('Bespoke Asset Allocation & Neural Weights');
+            const [isSubmitted, setIsSubmitted] = useState(false);
+
+            // Device customization details
+            const [galaxyColor, setGalaxyColor] = useState('gray');
+            const [connectionType, setConnectionType] = useState('5G');
+            const [batteryLevel, setBatteryLevel] = useState(98);
+            const [is120HzSimulated, setIs120HzSimulated] = useState(true);
+            const [frameScale, setFrameScale] = useState(1);
+            const [galaxyTime, setGalaxyTime] = useState('12:45 PM');
+
+            // Realtime clock synchronizer
+            useEffect(() => {
+                const clock = () => {
+                    const d = new Date();
+                    let h = d.getHours();
+                    const m = d.getMinutes().toString().padStart(2, '0');
+                    const ap = h >= 12 ? 'PM' : 'AM';
+                    h = h % 12 || 12;
+                    setGalaxyTime(`${h}:${m} ${ap}`);
+                };
+                clock();
+                const interval = setInterval(clock, 20000);
+                return () => clearInterval(interval);
+            }, []);
+
+            // Auto-scrolled running ticker effect
+            const [tickerIndex, setTickerIndex] = useState(0);
+            useEffect(() => {
+                const interval = setInterval(() => {
+                    setTickerIndex((v) => (v + 1) % REAL_TIME_MARKETS.length);
+                }, 4000);
+                return () => clearInterval(interval);
+            }, []);
+
+            // Allocate compute metrics based on settings
+            const getCalculatedAllocation = () => {
+                if (riskProfile === 'conservative') {
+                    return [
+                        { name: "Predictive Alternatives Credit", weight: 35, color: "#9E8256", description: "Secured yields with predictive downside protective overlays." },
+                        { name: "Sovereign AI Bond Bundles", weight: 40, color: "#0F1E36", description: "Sovereign credits linked to national compute productivity indexes." },
+                        { name: "Blue-Chip Tech Arbitrage", weight: 15, color: "#C5A880", description: "Market-neutral trade indexes tracking infrastructure leaders." },
+                        { name: "High-Liquidity Cash Sweep", weight: 10, color: "#E5DEC9", description: "Ultra-short term yielding reserves continuously optimized daily." }
+                    ];
+                } else if (riskProfile === 'balanced') {
+                    return [
+                        { name: "Predictive Alternatives Credit", weight: 25, color: "#9E8256", description: "Bespoke private credit with active neural risk buffers." },
+                        { name: "Dynamic Global Equities (Neural Core)", weight: 45, color: "#0F1E36", description: "Direct equity portfolio weighted dynamically based on global macro signals." },
+                        { name: "Generative Venture Derivatives", weight: 20, color: "#C5A880", description: "Structured tech investments with high multiple upside potential." },
+                        { name: "Sovereign Commodities & Metals", weight: 10, color: "#E5DEC9", description: "Scarcity-based assets acting as secure inflation neutralizers." }
+                    ];
+                } else {
+                    return [
+                        { name: "Dynamic Global Equities (Neural Core)", weight: 40, color: "#0F1E36", description: "High-conviction growth equities selected by macro deep neural nets." },
+                        { name: "Generative Venture Derivatives", weight: 35, color: "#C5A880", description: "High-exposure venture options and computational blockchain blocks." },
+                        { name: "Liquid Alternative Digital Assets", weight: 15, color: "#9E8256", description: "Sovereign hedging cryptographs and decentralized liquidity pools." },
+                        { name: "Emerging Tech Frontier Assets", weight: 10, color: "#D4C4A8", description: "Early access biotechnologies, clean hydrogen pipelines, and advanced robotics." }
+                    ];
+                }
+            };
+
+            const currentAllocation = getCalculatedAllocation();
+
+            // Stress execution algorithm simulating state shifts
+            const runStressEngine = () => {
+                setIsSimulatingRisk(true);
+                let count = 0;
+                const timer = setInterval(() => {
+                    setSimulatedScore(Math.floor(65 + Math.random() * 32));
+                    count++;
+                    if (count > 8) {
+                        clearInterval(timer);
+                        setIsSimulatingRisk(false);
+                        if (selectedRiskScenario === 'Geopolitical Stress') setSimulatedScore(91);
+                        if (selectedRiskScenario === 'Liquidity Outflow Event') setSimulatedScore(87);
+                        if (selectedRiskScenario === 'Neural Model Drifts') setSimulatedScore(96);
+                    }
+                }, 110);
+            };
+
+            // Transition handle logic
+            const navigateTo = (page) => {
+                setAnimState('fade-enter');
+                setTimeout(() => {
+                    setActivePage(page);
+                    setAnimState('fade-enter-active');
+                    const view = document.getElementById('galaxy-inner-scroll');
+                    if (view) view.scrollTo({ top: 0, behavior: 'smooth' });
+                }, 150);
+            };
+
+            const handleContactSubmit = (e) => {
+                e.preventDefault();
+                if (contactName && contactEmail) {
+                    setIsSubmitted(true);
+                    setTimeout(() => {
+                        setIsSubmitted(false);
+                        setContactName('');
+                        setContactEmail('');
+                    }, 5000);
+                }
+            };
+
+            // Retrieve frame borders color theme values
+            const getFrameBorders = () => {
+                switch(galaxyColor) {
+                    case 'yellow': return 'border-amber-400 bg-amber-400/10 shadow-amber-900/40';
+                    case 'violet': return 'border-indigo-400 bg-indigo-400/10 shadow-indigo-900/40';
+                    case 'black': return 'border-zinc-800 bg-zinc-800/10 shadow-zinc-950/40';
+                    default: return 'border-neutral-300 bg-neutral-300/10 shadow-slate-900/30';
+                }
+            };
+
+            return (
+                <div className="min-h-screen bg-[#0A0E14] text-[#0F1E36] font-sans antialiased flex flex-col xl:flex-row justify-center items-stretch p-3 md:p-6 gap-6 xl:gap-8 overflow-x-hidden">
+                    
+                    {/* LEFT SIDE PANEL: Presentation Suite Mockup controllers */}
+                    <div className="w-full xl:w-96 shrink-0 bg-gradient-to-br from-[#121B26] to-[#0A0D13] p-5 md:p-6 rounded-2xl border border-[#9E8256]/25 text-white flex flex-col justify-between space-y-6 shadow-xl relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-[#9E8256]/5 rounded-full blur-3xl pointer-events-none"></div>
+                        
+                        <div>
+                            <div className="flex items-center gap-2 mb-3">
+                                <Icon name="smartphone" size={16} className="text-[#9E8256]" />
+                                <span className="text-[10px] font-mono tracking-[0.25em] text-[#9E8256] uppercase font-bold">One UI 7.0 Active</span>
+                            </div>
+
+                            <h2 className="text-2.5xl font-serif font-semibold tracking-tight text-[#FBF9F6] border-b border-white/10 pb-3">
+                                Galaxy S25 Ultra <br /><span className="italic text-[#9E8256] font-light">Presentation Suite</span>
+                            </h2>
+
+                            <p className="text-xs text-white/70 leading-relaxed font-light mt-4">
+                                This module optimizes the high-security **J.P. Morgan Nexus AI** platform specifically for the newly architected symmetrical bezels, modern aspect ratio, and punch-hole camera lens of Samsung's flagship Galaxy S25.
+                            </p>
+
+                            <div className="space-y-4 pt-6">
+                                <div className="flex items-center gap-1.5 text-xs font-mono font-medium text-[#C5A880]">
+                                    <Icon name="sliders-horizontal" size={13} />
+                                    <span>SIMULATED HARDWARE KEYS</span>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <span className="text-[11px] text-white/60 tracking-wider block uppercase font-mono">1. Outer Titanium Finish</span>
+                                    <div className="grid grid-cols-4 gap-2">
+                                        {[
+                                            { id: 'gray', label: 'Silver', bg: 'bg-neutral-300' },
+                                            { id: 'yellow', label: 'Yellow', bg: 'bg-amber-100' },
+                                            { id: 'violet', label: 'Violet', bg: 'bg-indigo-300' },
+                                            { id: 'black', label: 'Obsidian', bg: 'bg-zinc-800' }
+                                        ].map((c) => (
+                                            <button
+                                                key={c.id}
+                                                onClick={() => setGalaxyColor(c.id)}
+                                                className={`p-1 text-[10px] rounded border transition-all flex flex-col items-center gap-1 ${galaxyColor === c.id ? 'border-[#9E8256] bg-white/10 text-white' : 'border-white/10 hover:border-[#9E8256]/50 text-white/50'}`}
+                                            >
+                                                <span className={`w-3.5 h-3.5 rounded-full ${c.bg} shadow-inner`}></span>
+                                                <span>{c.label}</span>
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <span className="text-[11px] text-white/60 tracking-wider block uppercase font-mono">2. Mobile Connectivity</span>
+                                    <div className="grid grid-cols-2 gap-2">
+                                        {[
+                                            { id: '5G', label: '5G Secured', desc: 'Sovereign Network' },
+                                            { id: 'Wi-Fi', label: 'Wi-Fi 7 Plus', desc: 'Secure Private Vault' }
+                                        ].map((c) => (
+                                            <button
+                                                key={c.id}
+                                                onClick={() => setConnectionType(c.id)}
+                                                className={`py-2 px-1 text-center rounded border transition-all ${connectionType === c.id ? 'bg-[#9E8256] border-[#9E8256] text-white font-semibold' : 'border-white/10 hover:border-white/20 text-white/60'}`}
+                                            >
+                                                <div className="text-[11px]">{c.label}</div>
+                                                <div className="text-[8px] opacity-75">{c.desc}</div>
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <div className="space-y-1.5">
+                                    <div className="flex justify-between items-center text-[11px]">
+                                        <span className="text-white/60 font-mono text-xs uppercase">3. S25 Battery Level</span>
+                                        <span className="text-[#C5A880] font-mono font-bold text-xs">{batteryLevel}%</span>
+                                    </div>
+                                    <input 
+                                        type="range"
+                                        min="5"
+                                        max="100"
+                                        value={batteryLevel}
+                                        onChange={(e) => setBatteryLevel(Number(e.target.value))}
+                                        className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-[#9E8256]"
+                                    />
+                                </div>
+
+                                <div className="space-y-2">
+                                    <div className="flex justify-between items-center text-[11px]">
+                                        <span className="text-white/60 font-mono uppercase">4. OLED 120Hz Fast Rate</span>
+                                        <span className={`text-[10px] uppercase font-mono px-1.5 py-0.5 rounded ${is120HzSimulated ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-rose-500/10 text-rose-400'}`}>
+                                            {is120HzSimulated ? '120 FPS' : '60 FPS'}
+                                        </span>
+                                    </div>
+                                    <button
+                                        onClick={() => setIs120HzSimulated(!is120HzSimulated)}
+                                        className="w-full py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded text-xs transition-all flex items-center justify-center gap-1.5 text-white/95 text-center"
+                                    >
+                                        <Icon name="refresh-cw" size={12} className={is120HzSimulated ? 'animate-spin opacity-80' : ''} />
+                                        <span>Toggle Adaptive Rate</span>
+                                    </button>
+                                </div>
+
+                                <div className="space-y-1.5">
+                                    <div className="flex justify-between items-center text-[11px]">
+                                        <span className="text-white/60 font-mono uppercase">5. Virtual Zoom Factor</span>
+                                        <span className="text-[#C5A880] font-mono">{Math.round(frameScale * 100)}%</span>
+                                    </div>
+                                    <input 
+                                        type="range"
+                                        min="0.8"
+                                        max="1.2"
+                                        step="0.05"
+                                        value={frameScale}
+                                        onChange={(e) => setFrameScale(Number(e.target.value))}
+                                        className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-[#9E8256]"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="p-3 bg-white/5 rounded-xl border border-white/10 space-y-2">
+                            <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#9E8256]">
+                                <Icon name="cpu" size={12} />
+                                <span className="tracking-widest uppercase font-mono">System Core Spec</span>
+                            </div>
+                            <p className="text-[10.5px] text-white/60 leading-relaxed">
+                                S25 Ultra layout incorporates symmetrical uniform **1.2mm border ratios** with a minimal centered **Infinity-O camera module**, maximizing readability for high-worth data charts.
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* CENTER / RIGHT: SAMSUNG GALAXY S25 ULTRA HARDWARE MOCKUP */}
+                    <div 
+                        className="flex-1 flex justify-center items-start transition-all duration-300 p-0"
+                        style={{ transform: `scale(${frameScale})`, transformOrigin: 'top center' }}
+                    >
+                        <div className={`w-full max-w-md bg-[#0F1E36] rounded-[42px] p-2 border-4 ${getFrameBorders()} transition-all duration-500 shadow-2xl relative flex flex-col justify-stretch overflow-hidden`}>
+                            {/* PolishHighlights */}
+                            <div className="absolute top-0 left-12 right-12 h-0.5 bg-gradient-to-r from-transparent via-white/40 to-transparent pointer-events-none opacity-80"></div>
+                            <div className="absolute bottom-0 left-12 right-12 h-0.5 bg-gradient-to-r from-transparent via-white/15 to-transparent pointer-events-none opacity-40"></div>
+
+                            {/* S25 Side Buttons */}
+                            <div className="absolute top-28 -right-0.5 w-[2px] h-12 bg-neutral-600/80 rounded-l pointer-events-none border-l border-white/10"></div>
+                            <div className="absolute top-44 -right-0.5 w-[2px] h-20 bg-neutral-600/80 rounded-l pointer-events-none border-l border-white/10"></div>
+                            <div className="absolute top-36 -left-0.5 w-[2px] h-14 bg-neutral-600/80 rounded-r pointer-events-none border-r border-white/10"></div>
+
+                            {/* MAIN DISPLAY CANVAS */}
+                            <div className="w-full bg-[#FBF9F6] rounded-[36px] overflow-hidden relative flex flex-col justify-between min-h-[760px] max-h-[880px] border border-[#0F1E36]/20">
+                                
+                                {/* TOP ONE UI STATUS BAR & CAMERA */}
+                                <div className="space-y-1 relative pt-3 px-5 bg-[#FBF9F6] border-b border-jpm-navy/10 text-[#0F1E36]/80 flex flex-col justify-between select-none z-50">
+                                    <div className="flex justify-between items-center h-5">
+                                        <div className="text-[11px] font-bold font-mono pl-0.5 tracking-tighter text-[#0F1E36]">
+                                            {galaxyTime}
+                                        </div>
+
+                                        <div className="absolute left-1/2 top-[10px] transform -translate-x-1/2 flex justify-center items-center">
+                                            <div className="w-[10px] h-[10px] bg-[#090D12] rounded-full border border-slate-700/40 relative flex justify-center items-center shadow-inner">
+                                                <div className="w-1.5 h-1.5 bg-[#1F2C40]/50 rounded-full blur-[0.5px] pointer-events-none"></div>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex items-center gap-1.5 text-[#0F1E36]">
+                                            {connectionType === '5G' ? (
+                                                <div className="flex items-center gap-0.5">
+                                                    <Icon name="signal" size={12} className="text-[#0F1E36]" />
+                                                    <span className="text-[8px] font-black tracking-tight font-mono hover:text-[#9E8256]">5G</span>
+                                                </div>
+                                            ) : (
+                                                <Icon name="wifi" size={12} className="text-[#0F1E36]" />
+                                            )}
+                                            <div className="w-1 h-1 rounded-full bg-emerald-500 animate-pulse mt-0.5" title="Sovereign Active Link" />
+
+                                            <div className="flex items-center gap-1 leading-none">
+                                                <span className="text-[8px] font-mono tracking-tighter font-bold">{batteryLevel}%</span>
+                                                <div className="relative w-5 h-2.5 bg-neutral-200 border border-[#0F1E36]/30 rounded-[3px] p-[1px] flex justify-start items-center">
+                                                    <div className={`h-full rounded-[1px] ${batteryLevel < 20 ? 'bg-rose-500' : 'bg-[#9E8256]'}`} style={{ width: `${batteryLevel}%` }}></div>
+                                                    <div className="absolute right-[-2.5px] top-[2px] w-[1px] h-[4px] bg-[#0F1E36]"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Brand Header */}
+                                    <header className="py-2.5 flex justify-between items-center">
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-7 h-7 bg-[#0F1E36] flex items-center justify-center border border-[#9E8256]/30">
+                                                <span className="text-[#FBF9F6] font-serif text-base font-bold tracking-wider">N</span>
+                                            </div>
+                                            <div>
+                                                <h1 className="text-sm font-serif font-black tracking-widest text-[#0F1E36]">NEXUS AI</h1>
+                                                <p className="text-[7.5px] tracking-[0.25em] uppercase font-bold text-[#9E8256] -mt-1">Private Banking Portal</p>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-1.5">
+                                            <span className="text-[8px] bg-[#9E8256]/15 text-[#9E8256] font-bold px-1.5 py-0.5 rounded tracking-wider uppercase font-mono border border-[#9E8256]/30">S25 SECURITY ACTIVE</span>
+                                        </div>
+                                    </header>
+
+                                    {/* RUNNING MARKET TICKER */}
+                                    <div className="bg-[#0F1E36] text-[#FBF9F6] -mx-5 px-5 py-2 flex justify-between items-center text-[10px] font-mono tracking-wider overflow-hidden border-b border-[#9E8256]/30 select-none">
+                                        <span className="text-[#9E8256] font-bold uppercase shrink-0 mr-4 text-[9px] tracking-widest">MARKET SIGNAL:</span>
+                                        <div className="flex-1 overflow-hidden relative h-4 flex items-center">
+                                            {REAL_TIME_MARKETS.map((m, idx) => (
+                                                <div 
+                                                    key={idx} 
+                                                    className={`absolute right-0 left-0 transition-all duration-500 ease-in-out flex justify-between items-center ${tickerIndex === idx ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-4 pointer-events-none'}`}
+                                                >
+                                                    <span className="font-semibold text-white truncate max-w-[120px] text-[9.5px]">{m.name}</span>
+                                                    <div className="flex items-center gap-1.5">
+                                                        <span className="text-[#FBF9F6]/85 text-[9.5px] font-semibold">{m.value}</span>
+                                                        <span className={`text-[9.5px] ${m.trend === 'up' ? 'text-emerald-400 font-bold' : 'text-rose-400 font-bold'}`}>{m.change}</span>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* INNER SCROLLING PAGE MODULES */}
+                                <main 
+                                    id="galaxy-inner-scroll"
+                                    className="flex-1 px-5 py-5 overflow-y-auto overflow-x-hidden relative scrollbar-thin pb-20"
+                                    style={{ scrollBehavior: 'smooth' }}
+                                >
+                                    <div className={animState}>
+                                        {activePage === 'perspective' && (
+                                            <div className="space-y-6">
+                                                <div className="flex justify-between items-center border-b border-[#0F1E36]/10 pb-2">
+                                                    <span className="text-[9.5px] font-extrabold tracking-[0.25em] uppercase text-[#9E8256]">ANNUAL STRATEGIC SIGHT</span>
+                                                    <span className="text-[10px] font-mono text-slate-400 font-bold">Q2 PREFERENCE</span>
+                                                </div>
+
+                                                <div className="space-y-3">
+                                                    <span className="text-[8px] bg-amber-500/10 text-amber-800 border border-amber-500/20 px-2 py-0.5 rounded font-extrabold uppercase tracking-wider inline-block font-mono">EXECUTIVE ADVISORY</span>
+                                                    <h2 className="text-2.5xl font-serif text-[#0F1E36] italic leading-tight font-medium">
+                                                        "The Structural Collapse of Traditional Asset Parity"
+                                                    </h2>
+                                                    <p className="text-xs text-[#4A525D] font-light leading-relaxed">
+                                                        According to our Nexus Predictive Neural Network analysis, impending sovereign liquidity events in emerging economies will likely bypass historic bond protections, requiring custom alternative positioning.
+                                                    </p>
+                                                </div>
+
+                                                <div className="relative aspect-video rounded-xl overflow-hidden border border-[#9E8256]/30 shadow-md mt-2">
+                                                    <img 
+                                                        src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&q=80&w=800" 
+                                                        alt="Luxury Finance" 
+                                                        className="w-full h-full object-cover brightness-95"
+                                                        referrerPolicy="no-referrer"
+                                                    />
+                                                    <div className="absolute inset-0 bg-gradient-to-t from-[#0F1E36] via-transparent to-transparent opacity-85"></div>
+                                                    <div className="absolute bottom-3 left-3 right-3 text-white">
+                                                        <p className="text-[8px] tracking-widest text-[#9E8256] font-bold uppercase font-mono">LOCATION BENCHMARK</p>
+                                                        <p className="text-xs font-serif italic text-white/90">Nexus Private Wealth Office, New York NY</p>
+                                                    </div>
+                                                </div>
+
+                                                <div className="bg-[#0F1E36] text-white p-4 rounded-xl border border-[#9E8256]/30 space-y-2.5 shadow-md">
+                                                    <div className="flex items-center gap-1.5">
+                                                        <Icon name="sparkles" size={13} className="text-[#9E8256]" />
+                                                        <span className="text-[9px] uppercase tracking-widest text-[#9E8256] font-extrabold font-mono">AI ENGINE ACTIVE UPDATE</span>
+                                                    </div>
+                                                    <p className="text-xs font-light text-[#FBF9F6]/85 leading-relaxed">
+                                                        Sovereign Shield asset defense algorithm is active. Selected client portfolio allocation resilience is scored at <strong className="text-[#C5A880] font-mono">99.42%</strong> resilient.
+                                                    </p>
+                                                </div>
+
+                                                <div className="space-y-4 pt-1">
+                                                    <h3 className="text-[9.5px] uppercase font-extrabold tracking-widest text-[#9E8256] border-b border-[#0F1E36]/10 pb-1.5 mb-2 font-mono">EXECUTIVE EDITORIALS</h3>
+                                                    <div className="space-y-4">
+                                                        {STRATEGIC_OUTLOOKS.map((outlook, idx) => (
+                                                            <div key={idx} className="space-y-2 border-b border-[#0F1E36]/5 pb-3">
+                                                                <span className="text-[8.5px] font-bold text-[#9E8256] tracking-wider uppercase font-mono">{outlook.category}</span>
+                                                                <h4 className="font-serif text-base text-[#0F1E36] font-semibold leading-snug">{outlook.title}</h4>
+                                                                <p className="text-[11px] text-[#4A525D] font-light leading-relaxed">{outlook.excerpt}</p>
+                                                                <div className="flex gap-2.5 text-[9px] text-[#4A525D]/60 pt-1 font-medium font-mono">
+                                                                    <span className="font-bold text-[#0F1E36]">{outlook.author}</span>
+                                                                    <span>•</span>
+                                                                    <span>{outlook.readTime}</span>
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </div>
+
+                                                <div className="pt-2">
+                                                    <button 
+                                                        onClick={() => navigateTo('wealth')}
+                                                        className="w-full py-4 px-6 bg-[#0F1E36] text-[#FBF9F6] hover:bg-[#9E8256] hover:text-white border border-[#9E8256]/30 transition-all duration-300 font-serif italic text-xs tracking-wider flex items-center justify-center gap-2 shadow-lg"
+                                                    >
+                                                        <span>Start Live Allocator Engine</span> <Icon name="chevron-right" size={14} className="text-[#9E8256]" />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {activePage === 'wealth' && (
+                                            <div className="space-y-6">
+                                                <div className="space-y-2">
+                                                    <span className="text-[9.5px] font-extrabold tracking-[0.25em] text-[#9E8256] uppercase block font-mono">WEALTH ADVISORY PORTAL</span>
+                                                    <h2 className="text-2.5xl font-serif text-[#0F1E36] leading-tight font-medium">
+                                                        Optimal Asset <span className="italic text-[#9E8256]">Allocation Simulator</span>
+                                                    </h2>
+                                                    <p className="text-xs text-[#4A525D] font-light leading-relaxed">
+                                                        Based on your target wealth and comfort with volatility, the AI engine dynamically balances modern fixed-income, defensive alts, and premium tech derivatives.
+                                                    </p>
+                                                </div>
+
+                                                <div className="bg-white p-5 rounded-xl border border-[#0F1E36]/10 space-y-5 shadow-sm">
+                                                    <div className="space-y-2">
+                                                        <label className="flex justify-between items-center text-[10px] font-extrabold text-[#0F1E36]/80 tracking-wide uppercase font-mono">
+                                                            <span>Target Investment (USD)</span>
+                                                            <span className="text-[#9E8256] text-sm font-mono font-bold">${investmentSize.toLocaleString()}</span>
+                                                        </label>
+                                                        <input 
+                                                            type="range" 
+                                                            min="100000" 
+                                                            max="100000000" 
+                                                            step="100000"
+                                                            value={investmentSize}
+                                                            onChange={(e) => setInvestmentSize(Number(e.target.value))}
+                                                            className="w-full h-1.5 bg-[#F4F1EC] rounded-lg appearance-none cursor-pointer accent-[#9E8256]"
+                                                        />
+                                                        <div className="flex justify-between text-[9px] text-[#4A525D]/60 font-mono font-bold">
+                                                            <span>$100K Min</span>
+                                                            <span>$50M</span>
+                                                            <span>$100M Max</span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="space-y-2">
+                                                        <span className="text-[10px] font-extrabold text-[#0F1E36]/80 tracking-wide uppercase block font-mono">Volatility Profile</span>
+                                                        <div className="grid grid-cols-3 gap-2">
+                                                            {[
+                                                                { id: 'conservative', label: 'Preservation', desc: 'Defensive Focus' },
+                                                                { id: 'balanced', label: 'Balanced', desc: 'Combined Growth' },
+                                                                { id: 'aggressive', label: 'Frontier Alpha', desc: 'High-Yield Alts' }
+                                                            ].map((p) => {
+                                                                const isActive = riskProfile === p.id;
+                                                                return (
+                                                                    <button
+                                                                        key={p.id}
+                                                                        onClick={() => setRiskProfile(p.id)}
+                                                                        className={`py-2 px-1 text-center rounded border transition-all duration-300 flex flex-col justify-center items-center ${isActive ? 'bg-[#0F1E36] border-[#0F1E36] text-white shadow-md' : 'bg-[#FBF9F6] border-slate-200 hover:border-[#9E8256] text-[#0F1E36]'}`}
+                                                                    >
+                                                                        <span className="text-xs font-bold leading-none">{p.label}</span>
+                                                                        <span className={`text-[8px] mt-1 ${isActive ? 'text-[#C5A880] opacity-100 font-bold' : 'text-slate-400 opacity-85'}`}>{p.desc}</span>
+                                                                    </button>
+                                                                );
+                                                            })}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div className="space-y-4">
+                                                    <div className="flex justify-between items-center select-none">
+                                                        <h3 className="text-[9px] font-extrabold tracking-widest text-[#9E8256] uppercase font-mono">ALLOCATION SEGMENTS</h3>
+                                                        <span className="text-[9.5px] font-mono text-slate-400 font-bold uppercase">Q2 ACTIVE</span>
+                                                    </div>
+
+                                                    <div className="h-6 w-full rounded-2xl overflow-hidden flex border border-[#0F1E36]/10 shadow-sm bg-neutral-100">
+                                                        {currentAllocation.map((item, idx) => (
+                                                            <div 
+                                                                key={idx}
+                                                                style={{ width: `${item.weight}%`, backgroundColor: item.color }}
+                                                                className="h-full relative transition-all duration-500 hover:brightness-105"
+                                                            />
+                                                        ))}
+                                                    </div>
+
+                                                    <div className="space-y-2.5">
+                                                        {currentAllocation.map((item, idx) => (
+                                                            <div key={idx} className="bg-white p-4 rounded-xl border border-[#0F1E36]/5 space-y-1.5 shadow-xs">
+                                                                <div className="flex justify-between items-center">
+                                                                    <div className="flex items-center gap-2">
+                                                                        <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }} />
+                                                                        <span className="text-xs font-bold text-[#0F1E36]">{item.name}</span>
+                                                                    </div>
+                                                                    <span className="text-xs font-mono font-bold text-[#9E8256]">{item.weight}%</span>
+                                                                </div>
+                                                                <p className="text-[10px] text-[#4A525D] leading-relaxed font-light">{item.description}</p>
+                                                                <div className="text-[9px] text-[#9E8256] font-mono font-semibold uppercase tracking-wider pt-1">
+                                                                    ESTIMATED SIZE: ${(investmentSize * (item.weight / 100)).toLocaleString(undefined, {maximumFractionDigits: 0})} USD
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {activePage === 'risk' && (
+                                            <div className="space-y-6">
+                                                <div className="space-y-2">
+                                                    <span className="text-[9px] font-extrabold tracking-[0.25em] text-[#9E8256] uppercase block font-mono">RISK DIAGNOSTIC UNIT</span>
+                                                    <h2 className="text-2.5xl font-serif text-[#0F1E36] leading-tight">Tail-Risk Stress Test</h2>
+                                                    <p className="text-xs text-[#4A525D] font-light leading-relaxed">
+                                                        Simulate extreme geopolitical, market liquidity, or algorithmic events directly on your selected core asset weights.
+                                                    </p>
+                                                </div>
+
+                                                <div className="space-y-2">
+                                                    {[
+                                                        { id: 'Geopolitical Stress', headline: 'Geopolitical Escalation (Capital Controls)', desc: 'Restricted cross-border trades, resources embargoes and emerging market FX fluctuation.' },
+                                                        { id: 'Liquidity Outflow Event', headline: 'Liquidity Exodus Shock (Bank Run)', desc: 'Surge in short-term institutional redemption requests sparking severe repo market shortfalls.' },
+                                                        { id: 'Neural Model Drifts', headline: 'Algorithmic Anomaly & AI Drift', desc: 'Parametric drift across deep-learning electronic systems creating feedback loops.' }
+                                                    ].map((s) => (
+                                                        <button
+                                                            key={s.id}
+                                                            onClick={() => setSelectedRiskScenario(s.id)}
+                                                            className={`w-full p-4 text-left rounded-xl border transition-all duration-300 ${selectedRiskScenario === s.id ? 'bg-white border-[#9E8256] shadow-md' : 'bg-transparent border-slate-200'}`}
+                                                        >
+                                                            <div className="flex justify-between items-center mb-1">
+                                                                <span className={`text-xs font-bold ${selectedRiskScenario === s.id ? 'text-[#9E8256]' : 'text-[#0F1E36]'}`}>{s.headline}</span>
+                                                            </div>
+                                                            <p className="text-[10px] text-[#4A525D] font-light leading-relaxed">{s.desc}</p>
+                                                        </button>
+                                                    ))}
+                                                </div>
+
+                                                <div className="bg-[#0F1E36] text-[#FBF9F6] p-6 rounded-2xl border border-[#9E8256]/30 space-y-4 shadow-xl text-center relative overflow-hidden">
+                                                    <span className="text-[8px] tracking-widest text-[#9E8256] font-bold uppercase font-mono">ESTIMATED RESILIENCE</span>
+                                                    <div className="text-6xl font-serif text-[#C5A880] my-2 tracking-tighter">
+                                                        {simulatedScore} <span className="text-xl text-white/40">/ 100</span>
+                                                    </div>
+                                                    <button 
+                                                        onClick={runStressEngine}
+                                                        disabled={isSimulatingRisk}
+                                                        className="w-full py-4 bg-[#9E8256] text-white font-serif text-xs uppercase hover:bg-white hover:text-[#0F1E36] transition-all duration-300 disabled:opacity-50"
+                                                    >
+                                                        {isSimulatingRisk ? 'Simulating Dynamic Stress...' : 'Run Diagnostics Stress Test'}
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {activePage === 'treasury' && (
+                                            <div className="space-y-6">
+                                                <div className="space-y-2">
+                                                    <span className="text-[9px] font-extrabold tracking-[0.25em] text-[#9E8256] uppercase block font-mono">TREASURY MANAGEMENT</span>
+                                                    <h2 className="text-2.5xl font-serif text-[#0F1E36] leading-tight">Liquidity & Yield Sweeps</h2>
+                                                    <p className="text-xs text-[#4A525D] font-light leading-relaxed">
+                                                        Manage operational corporate cash surpluses dynamically across AAA secure sovereign money baskets seamlessly.
+                                                    </p>
+                                                </div>
+
+                                                <div className="grid grid-cols-2 gap-3">
+                                                    <div className="bg-white p-4 rounded-xl border border-slate-200">
+                                                        <span className="text-[9px] text-[#9E8256] font-mono block">NYC SWEEP YIELD</span>
+                                                        <p className="text-lg font-serif font-black text-[#0F1E36] mt-1">4.82% APY</p>
+                                                    </div>
+                                                    <div className="bg-white p-4 rounded-xl border border-slate-200">
+                                                        <span className="text-[9px] text-[#9E8256] font-mono block">LONDON SECURED</span>
+                                                        <p className="text-lg font-serif font-black text-[#0F1E36] mt-1">3.95% APY</p>
+                                                    </div>
+                                                </div>
+
+                                                <div className="p-4 bg-emerald-500/10 rounded-xl border border-emerald-550/20 text-emerald-800 text-xs">
+                                                    Automatic optimization executes daily at 16:30 EST matching liquidity reserve buffers.
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {activePage === 'esg' && (
+                                            <div className="space-y-6">
+                                                <div className="space-y-2">
+                                                    <span className="text-[9px] font-extrabold tracking-[0.25em] text-[#9E8256] uppercase block font-mono">FIDUCIARY STEWARDSHIP</span>
+                                                    <h2 className="text-2.5xl font-serif text-[#0F1E36] leading-tight">ESG Quantitative Impact</h2>
+                                                    <p className="text-xs text-[#4A525D] font-light leading-relaxed">
+                                                        Audit your strategic weights against carbon footprint metrics, board representation metrics, and infrastructure longevity guidelines.
+                                                    </p>
+                                                </div>
+
+                                                <div className="space-y-4">
+                                                    <div className="flex gap-2">
+                                                        {['carbon', 'governance', 'infrastructure'].map((m) => (
+                                                            <button 
+                                                                key={m}
+                                                                onClick={() => setActiveEsgMetric(m)}
+                                                                className={`p-2 text-[10px] rounded uppercase font-mono flex-1 border ${activeEsgMetric === m ? 'bg-[#0F1E36] border-[#0F1E36] text-[#FBF9F6]' : 'border-slate-200 hover:border-[#9E8256]'}`}
+                                                            >
+                                                                {m}
+                                                            </button>
+                                                        ))}
+                                                    </div>
+
+                                                    <div className="bg-white p-4 rounded-xl border border-slate-200">
+                                                        <p className="text-xs italic text-[#4A525D]">
+                                                            {activeEsgMetric === 'carbon' && "Carbon Neutrality Optimization reduces weighted exposure of secondary supply chains, realizing up to 41% emission cuts compared to generic benchmark options."}
+                                                            {activeEsgMetric === 'governance' && "Corporate Board alignment tracking verifies regulatory board independence levels, corporate diversity guidelines, and compliance structures."}
+                                                            {activeEsgMetric === 'infrastructure' && "Sovereign compute nodes physical green energy source ratio: 82% Hydropower/Solar, certified emissions neutral target Q3."}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {activePage === 'advisor' && (
+                                            <div className="space-y-6">
+                                                <div className="space-y-2">
+                                                    <span className="text-[9px] font-extrabold tracking-[0.25em] text-[#9E8256] uppercase block font-mono">bespoke private onboarding</span>
+                                                    <h2 className="text-2.5xl font-serif text-[#0F1E36] leading-tight">Consult with Nexus Team</h2>
+                                                    <p className="text-xs text-[#4A525D] font-light leading-relaxed">
+                                                        Submit your target parameters to receive a customized sovereign allocation report from our New York wealth consulting team within 2 hours.
+                                                    </p>
+                                                </div>
+
+                                                {isSubmitted ? (
+                                                    <div className="p-6 bg-emerald-500/10 text-center rounded-xl border border-emerald-500/30 text-emerald-800 font-serif italic text-sm">
+                                                        "Thank you. Your bespoke parameters have been successfully encrypted and routed to Elena Rostova's sovereign strategic desk."
+                                                    </div>
+                                                ) : (
+                                                    <form onSubmit={handleContactSubmit} className="space-y-4">
+                                                        <div className="space-y-1">
+                                                            <label className="text-[10px] font-extrabold uppercase font-mono text-slate-500 block">Your Name</label>
+                                                            <input 
+                                                                type="text" 
+                                                                value={contactName} 
+                                                                onChange={(e) => setContactName(e.target.value)} 
+                                                                required
+                                                                className="w-full p-3 bg-white border border-slate-200 text-xs focus:ring-1 focus:ring-[#9E8256]"
+                                                            />
+                                                        </div>
+                                                        <div className="space-y-1">
+                                                            <label className="text-[10px] font-extrabold uppercase font-mono text-slate-500 block">Encrypted Corporate Email</label>
+                                                            <input 
+                                                                type="email" 
+                                                                value={contactEmail} 
+                                                                onChange={(e) => setContactEmail(e.target.value)} 
+                                                                required
+                                                                className="w-full p-3 bg-white border border-slate-200 text-xs"
+                                                            />
+                                                        </div>
+                                                        <button 
+                                                            type="submit" 
+                                                            className="w-full py-3.5 bg-[#0F1E36] text-[#FBF9F6] font-serif uppercase text-xs"
+                                                        >
+                                                            Submit Parameters & Connect S25
+                                                        </button>
+                                                    </form>
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
+                                </main>
+
+                                {/* REFINED EDITORIAL FOOTER */}
+                                <footer className="px-5 py-6 border-t border-[#0F1E36]/10 bg-[#F5F2ED] text-[10.5px] text-[#4A525D] space-y-3 z-30 select-none pb-24">
+                                    <div className="flex items-center gap-1.5">
+                                        <div className="w-4 h-4 bg-[#0F1E36] flex items-center justify-center">
+                                            <span className="text-white font-serif text-[10px] font-bold">N</span>
+                                        </div>
+                                        <span className="font-serif font-bold text-[#0F1E36] tracking-widest text-[11px]">NEXUS FINANCE</span>
+                                    </div>
+                                    <p className="font-light leading-relaxed text-[#4A525D]/90">
+                                        The Nexus AI Private Portal is a sovereign mobile-exclusive platform custom engineered for multi-family offices and private asset controllers, drawing on J.P. Morgan's elite heritage of security, stewardship, and typographic precision.
+                                    </p>
+                                    <div className="pt-3 border-t border-[#0F1E36]/5 text-[8.5px] tracking-widest text-[#4A525D]/70 uppercase space-y-1 font-mono">
+                                        <p>© 2026 Nexus AI Finance Group. All Rights Reserved.</p>
+                                        <p>Conforming to Basel IV & EU AI Act Governance.</p>
+                                    </div>
+                                </footer>
+
+                                {/* FLOATING GALAXY Navigation Tabs */}
+                                <div className="absolute bottom-5 left-4.5 right-4.5 bg-[#0F1E36] rounded-2xl border border-[#9E8256]/40 py-2.5 px-1.5 flex justify-between items-center shadow-xl shadow-[#0F1E36]/40 z-50 select-none">
+                                    {[
+                                        { id: 'perspective', label: 'Outlook', icon: 'book-open' },
+                                        { id: 'wealth', label: 'Allocator', icon: 'compass' },
+                                        { id: 'risk', label: 'Risk AI', icon: 'shield-check' },
+                                        { id: 'treasury', label: 'Treasury', icon: 'building' },
+                                        { id: 'esg', label: 'Stewardship', icon: 'activity' },
+                                        { id: 'advisor', label: 'Consult', icon: 'phone-call' },
+                                    ].map((item) => {
+                                        const isActive = activePage === item.id;
+                                        return (
+                                            <button 
+                                                key={item.id}
+                                                onClick={() => navigateTo(item.id)}
+                                                className="flex flex-col items-center gap-1 flex-1 transition-all"
+                                            >
+                                                <div className={`p-1.5 rounded-lg transition-all duration-300 ${isActive ? 'bg-[#9E8256] text-white scale-110 shadow-md shadow-white/5' : 'text-white/60 hover:text-white/90 hover:scale-105'}`}>
+                                                    <Icon name={item.icon} size={14} />
+                                                </div>
+                                                <span className={`text-[8px] font-semibold tracking-tighter ${isActive ? 'text-[#9E8256]' : 'text-white/40'}`}>
+                                                    {item.label}
+                                                </span>
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+
+                                {/* Gesture Bar */}
+                                <div className="absolute bottom-1.5 left-1/2 transform -translate-x-1/2 w-28 h-1 bg-neutral-400/80 rounded-full z-50 pointer-events-none"></div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            );
+        }
+
+        // Mount React application
+        const rootElement = document.getElementById('root');
+        const root = ReactDOM.createRoot(rootElement);
+        root.render(<App />);
+    </script>
+</body>
+</html>
