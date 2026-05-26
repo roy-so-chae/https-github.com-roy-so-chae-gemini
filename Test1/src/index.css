@@ -1,18 +1,20 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Inter:wght@200;300;400;500;600&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --font-serif: "Playfair Display", serif;
+  --font-serif: "Cormorant Garamond", serif;
   --font-sans: "Inter", sans-serif;
   
-  --color-jpm-navy: #001D47;
-  --color-jpm-gold: #D4C4A8;
-  --color-jpm-paper: #F5F2ED;
+  --color-jpm-navy: #0F1E36;
+  --color-jpm-gold: #9E8256;
+  --color-jpm-gold-light: #C5A880;
+  --color-jpm-paper: #FBF9F6;
+  --color-jpm-gray: #4A525D;
 }
 
 @layer base {
   body {
-    @apply font-sans bg-white text-jpm-navy selection:bg-jpm-gold selection:text-jpm-navy;
+    @apply font-sans bg-[#FBF9F6] text-jpm-navy selection:bg-jpm-gold selection:text-white antialiased;
   }
 }
 
@@ -20,7 +22,7 @@
   .text-serif {
     font-family: var(--font-serif);
   }
-  .bg-glass {
-    @apply bg-white/80 backdrop-blur-md border border-white/20;
+  .border-editorial {
+    @apply border-t border-b border-jpm-navy/10;
   }
 }
