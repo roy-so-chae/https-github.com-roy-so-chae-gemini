@@ -6,21 +6,26 @@
 
 ---
 
-## 📲 단일 포터블 파일 가동: `Nexus AI.html` 즉시 더블클릭 실행
+## 📲 `Nexus AI.html` 웹 브라우저 화면으로 바로 보고 실행하기 (Visual Web Execution)
 
-로컬 노드 패키지(`npm install`) 설치 절차나 복잡한 컴파일 세팅 없이, 아래 **실행용 단일 HTML 파일**을 즉시 더블클릭 하거나 클릭만으로 웹 브라우저에서 대화형 시뮬레이션을 1초 만에 확인해 보실 수 있습니다! React, Tailwind, Lucide Icons CDN을 완전 내장하여 가동됩니다.
+**Q. 왜 GitHub에서 `.html` 파일을 누르면 소스코드가 나오나요?**
+> GitHub는 기본적으로 보안 정책상 리포지토리 안의 HTML 파일을 웹 페이지로 직접 렌더링해주지 않고 **코드 텍스트**로 보여줍니다. 
+> 
+> 소스코드가 아닌 **진짜 작동하는 모바일 웹페이지 화면**을 클릭 한 번으로 바로 띄우려면, 아래 방법 중 편하신 방법을 선택해 주세요!
 
-*   👉 **[루트 진입점: Nexus AI.html 즉시 실행/다운로드 링크](./Nexus%20AI.html)**
-*   👉 **[Test1 폴더 하위: Nexus AI.html 즉시 실행/다운로드 링크](./Test1/Nexus%20AI.html)**
+### 1️⃣ [추천 ⚡] 실시간 라이브 데모 서버 주소 클릭 (Live Web App)
+클라우드 서버에서 이미 모든 빌드가 완벽하게 구동 중이므로, 아래 주소를 클릭하면 브라우저에서 환상적인 모바일 포털이 즉시 실행됩니다.
+*   👉 **[모바일 웹페이지 즉시 보기 (Development Live App)](https://ais-dev-kzarxok5ga4zqrvu7cwycp-219759272678.asia-northeast1.run.app)** (강력 추천 🌟)
+*   👉 **[모바일 웹페이지 공유용 프리뷰 (Shared Live App)](https://ais-pre-kzarxok5ga4zqrvu7cwycp-219759272678.asia-northeast1.run.app)**
 
----
+### 2️⃣ HTML HTMLPreview 엔진을 통해 화면 바로 보기 (HTML Rendering Live)
+GitHub에 올려진 `Nexus AI.html` 파일을 소스코드가 아닌 웹 렌더링된 모바일 웹 화면으로 가동해 주는 무료 도구 링크입니다. (리포지토리를 생성하신 후 아래 형식으로 링크를 클릭해 보세요!)
+*   `https://htmlpreview.github.io/?https://github.com/사용자ID/저장소ID/blob/main/Nexus%20AI.html`
 
-## ⚡ 실시간 서버 데모: 바로 클릭해서 웹에서 즉시 테스트하기 (Live Sandbox Platforms)
-
-웹 브라우저를 통해 실시간으로 스트리밍 가동 중인 샌드박스 링크입니다. 언제 어디서든 바로 구동해 보실 수 있습니다.
-
-*   👉 **[개발 전용 샌드박스 URL 실행하기 (Development Live App)](https://ais-dev-kzarxok5ga4zqrvu7cwycp-219759272678.asia-northeast1.run.app)** (가장 즉각적이고 안정적인 테스트베드)
-*   👉 **[공유용 프리뷰 호스트 URL 실행하기 (Shared Live App)](https://ais-pre-kzarxok5ga4zqrvu7cwycp-219759272678.asia-northeast1.run.app)** (협업 및 데모용 안정화 빌드)
+### 3️⃣ 내 컴퓨터에서 더블 클릭하기 (Local Double-Click)
+1. 이 프로젝트의 코드를 다운로드(ZIP) 받거나 클론합니다.
+2. 다운로드 된 폴더에 들어있는 **`Nexus AI.html`** 파일을 마우스로 **더블 클릭**합니다.
+3. 소스코드 없이, 크롬이나 Edge 등 사용하시는 웹 브라우저에서 **곧바로 완벽하게 작동하는 모바일 앱 화면**이 열립니다!
 
 ---
 
